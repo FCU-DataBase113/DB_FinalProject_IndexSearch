@@ -21,26 +21,44 @@ void saveData()
         }
 
         const vector<string> &values = pair.second;
+        int fileCount = 1; // 文件計數器
+        int valueCount = 0; // 當前文件的value計數器
 
-        // 構造檔案路徑和名稱
-        stringstream ss;
-        ss << "./course_student/" << key << ".txt";
-        string filePath = ss.str();
+        for (size_t i = 0; i < values.size(); ++i)
+        {
+            // 每200個value或開始一個新的key時，創建一個新文件
+            if (valueCount == 0 || valueCount % 200 == 0)
+            {
+                // 構造檔案路徑和名稱
+                stringstream ss;
+                ss << "./course_student/" << key << "_" << setw(3) << setfill('0') << fileCount << ".txt";
+                string filePath = ss.str();
 
-        // 打開檔案準備寫入
-        ofstream outFile(filePath);
-        if (!outFile)
-        {
-            cerr << "Failed to open file for writing: " << filePath << endl;
-            continue; // 處理下一個檔案
+                // 打開檔案準備寫入
+                ofstream outFile(filePath);
+                if (!outFile)
+                {
+                    cerr << "Failed to open file for writing: " << filePath << endl;
+                    break; // 如果無法打開文件，則跳出循環
+                }
+
+                // 寫入當前批次的value，直到達到200個或所有value寫完
+                for (; i < values.size() && valueCount < 200; ++i, ++valueCount)
+                {
+                    outFile << values[i] << endl;
+                }
+
+                // 關閉當前文件
+                outFile.close();
+
+                // 更新文件計數器並重置value計數器
+                ++fileCount;
+                valueCount = 0;
+
+                // 如果當前批次已經寫完，需要將循環變量i回退一個位置，因為for循環會再次進行i++
+                if (i < values.size()) --i;
+            }
         }
-        // 寫入數據
-        for (const string &value : values)
-        {
-            outFile << value << endl;
-        }
-        // 關閉檔案
-        outFile.close();
     }
 }
 int main()

@@ -11,50 +11,67 @@ using namespace std;
 ifstream in;
 void search(string stu_id)
 {
-    stringstream ss;
-    ss << "./course_student/" << stu_id << ".txt";
-    string filePath = ss.str();
-    in.open(filePath.c_str());
-    if (!in)
+    int fileIndex = 1; // 從1開始計數
+    bool fileExists = true; // 假設文件存在
+    vector<string> allLines; // 用於儲存所有temp_str的vector
+    int std_nums = 0;
+    while (fileExists)
     {
-        cout << "The course ID does not exist." << endl;
-        return;
-    }
-    vector<pair<int,int>> poslist;
-    string pos;
-    while(getline(in, pos))
-    {
-        stringstream posStream(pos); // 將字串pos轉換為流
-        string segment;
-        vector<int> seglist;
-
-        // 使用逗號作為分隔符從流中讀取數字
-        while(getline(posStream, segment, ','))
+        stringstream ss;
+        ss << "./course_student/" << stu_id << "_" << setw(3) << setfill('0') << fileIndex << ".txt";
+        string filePath = ss.str();
+        ifstream in(filePath.c_str());
+        if (!in)
         {
-            seglist.push_back(stoi(segment)); // 將字串轉換為int並儲存到向量中
+            fileExists = false; // 如果文件不存在，設置fileExists為false並退出循環
+            if (fileIndex == 1) // 如果連第一個文件都不存在，則輸出錯誤信息
+            {
+                cout << "The course ID does not exist." << endl;
+            }
+            break;
         }
-
-        // 假設seglist中現在有兩個元素，分別儲存到兩個不同的int變數中
-        int firstNumber = seglist[0];
-        int secondNumber = seglist[1];
-        // 現在你可以使用firstNumber和secondNumber進行後續操作
-        poslist.push_back(make_pair(firstNumber, secondNumber));
-    }
-    in.close();
-    for (auto &pair : poslist)
-    {
-        stringstream search_id;
-        search_id << "./data_big5/" << setw(4) << setfill('0') << pair.first;
-        string search_locate = search_id.str();
-        in.open(search_locate.c_str());
-        string temp_str;
-        for(int i = 0;i < pair.second;i++)
+        vector<pair<int,int>> poslist;
+        string pos;
+        while(getline(in, pos))
         {
-            getline(in, temp_str);
+            stringstream posStream(pos);
+            string segment;
+            vector<int> seglist;
+
+            while(getline(posStream, segment, ','))
+            {
+                seglist.push_back(stoi(segment));
+            }
+
+            int firstNumber = seglist[0];
+            int secondNumber = seglist[1];
+            poslist.push_back(make_pair(firstNumber, secondNumber));
         }
         in.close();
-        cout << temp_str << endl;
+        for (auto &pair : poslist)
+        {
+            stringstream search_id;
+            search_id << "./data_big5/" << setw(4) << setfill('0') << pair.first;
+            string search_locate = search_id.str();
+
+            ifstream in(search_locate.c_str());
+            string temp_str;
+            for(int i = 0; i < pair.second; i++)
+            {
+                getline(in, temp_str);
+            }
+            in.close();
+            allLines.push_back(temp_str); // 將讀取到的字符串添加到vector中
+            std_nums++;
+        }
+        fileIndex++; // 嘗試下一個文件編號
     }
+    sort(allLines.begin(), allLines.end()); // 對所有字符串進行排序
+    for (const auto &line : allLines)
+    {
+        cout << line << endl; // 輸出排序後的每個字符串
+    }
+    cout << "Total number of students: " << std_nums << endl;
 }
 int main() 
 {
