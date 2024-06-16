@@ -24,7 +24,7 @@ void saveData()
 
         // 構造檔案路徑和名稱
         stringstream ss;
-        ss << "./selected_course/" << key << ".txt";
+        ss << "./course_student/" << key << ".txt";
         string filePath = ss.str();
 
         // 打開檔案準備寫入
@@ -71,12 +71,16 @@ int main()
                 count++;
                 // 透過,分割字串
                 stringstream ss(s); // 使用 stringstream 來處理字符串
-                string student_id;
-                getline(ss, student_id, ',');           // 使用 ',' 作為分隔符來提取 student_id
+                string student_id, course_id, course_name;
+                getline(ss, student_id, ','); // 第一個元素是 student_id
+                getline(ss, course_id, ',');  // 第二個元素是 course_id
+                // 無需提取 course_name，除非之後需要使用
+                // getline(ss, course_name, ','); // 第三個元素是 course_name（如果需要的話）
+
                 stringstream positionStream;            // 創建一個 stringstream 對象
                 positionStream << x << "," << count;    // 將 x 和 count 的值，以及一個逗號分隔符寫入到 stringstream 中
                 string position = positionStream.str(); // 從 stringstream 對象中獲取格式化後的字符串
-                data[student_id].push_back(position);   // 將整行資料存入 date[student_id]
+                data[course_id].push_back(position);    // 將整行資料存入 data[course_id]
             }
         }
         in.close();
