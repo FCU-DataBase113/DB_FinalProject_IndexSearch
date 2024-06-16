@@ -11,7 +11,7 @@
 #include <set>
 #include <direct.h>
 using namespace std;
-map<string, vector<string>> data;
+map<string, vector<string>> datas;
 
 // bool IsFileExists(const string &file_name) {
 //   ifstream fin(file_name);
@@ -37,7 +37,7 @@ size_t getFileSize(const string& fileName) {
 }
 
 void saveData() {
-    for (const auto& pair : data) {
+    for (const auto& pair : datas) {
         const string& key = pair.first;
         const vector<string>& values = pair.second;
 
@@ -139,7 +139,7 @@ int main()
                 positionStream << x << "," << count; 
                 string position = positionStream.str(); 
                 //cout << course_name << position << endl;
-                data[course_name].push_back(position); 
+                datas[course_name].push_back(position); 
             }
         }
         in.close();

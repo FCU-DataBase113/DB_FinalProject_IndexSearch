@@ -8,10 +8,10 @@
 #include <vector>
 #include <set>
 using namespace std;
-map<string, vector<string>> data;
+map<string, vector<string>> datas;
 void saveData()
 {
-    for (const auto &pair : data)
+    for (const auto &pair : datas)
     {
         const string &key = pair.first;
         // 檢查key是否為空
@@ -98,7 +98,7 @@ int main()
                 stringstream positionStream;            // 創建一個 stringstream 對象
                 positionStream << x << "," << count;    // 將 x 和 count 的值，以及一個逗號分隔符寫入到 stringstream 中
                 string position = positionStream.str(); // 從 stringstream 對象中獲取格式化後的字符串
-                data[course_id].push_back(position);    // 將整行資料存入 data[course_id]
+                datas[course_id].push_back(position);    // 將整行資料存入 data[course_id]
             }
         }
         in.close();
