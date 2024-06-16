@@ -77,11 +77,11 @@ int main()
                 stringstream ss(s); // 使用 stringstream 來處理字符串
                 string student_id;
                 getline(ss, student_id, ','); // 使用 ',' 作為分隔符來提取 student_id
-                stringstream poisonStream; // 創建一個 stringstream 對象
-                poisonStream << x << "," << count; // 將 x 和 count 的值，以及一個逗號分隔符寫入到 stringstream 中
-                string poison = poisonStream.str(); // 從 stringstream 對象中獲取格式化後的字符串
-                cout << student_id << poison << endl;
-                data[student_id].push_back(poison); // 將整行資料存入 date[student_id]
+                stringstream positionStream; // 創建一個 stringstream 對象
+                positionStream << x << "," << count; // 將 x 和 count 的值，以及一個逗號分隔符寫入到 stringstream 中
+                string position = positionStream.str(); // 從 stringstream 對象中獲取格式化後的字符串
+                cout << student_id << position << endl;
+                data[student_id].push_back(position); // 將整行資料存入 date[student_id]
             }
         }
         in.close();
