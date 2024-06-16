@@ -109,6 +109,7 @@ void displayFileContents(const string& filePath) {
 int main() {
     BinarySearchTree bst;
     string directoryPath = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/";
+    // string directoryPath = "./selected_course/";
     populateTreeFromDirectory(bst, directoryPath);
     while(1) {
         string searchFile;
@@ -118,7 +119,7 @@ int main() {
             cout << "Exiting..." << endl;
             break;
         }
-        //testD0960810
+        //D0960810
         TreeNode* result = bst.search(searchFile);
         if (result) {
             cout << searchFile << " found in the binary search tree." << endl;

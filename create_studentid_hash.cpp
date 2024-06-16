@@ -24,7 +24,8 @@ void saveData()
 
         // 構造檔案路徑和名稱
         stringstream ss;
-        ss << "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/" << key << ".txt";
+        ss << "./selected_course/" << key << ".txt";
+        //ss << "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/" << key << ".txt";
         string filePath = ss.str();
 
         // 打開檔案準備寫入
@@ -48,7 +49,8 @@ int main()
 {
     ifstream in;
     int datacounter = 1;
-    string locate = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/data_big5/";
+    //string locate = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/data_big5/";
+    string locate = "./data_big5/"; // 這是你的數據文件夾的路徑，例如："./data_big5/
     int x = 1;
     while (x < 467)
     {
