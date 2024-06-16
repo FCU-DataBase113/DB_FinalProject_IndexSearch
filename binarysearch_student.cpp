@@ -65,7 +65,13 @@ public:
     }
 
     TreeNode* searchRecursive(TreeNode* node, string name) {
-        if (node == nullptr || node->fileName == name) {
+        cout << "Searching for: " << name << endl; // Debug output
+        cout << "Now searching in: " << node->fileName << endl; // Debug output
+        if (node == nullptr) {
+            cout << "Search hit null node, not found." << endl; // Debug output
+            return node;
+        }
+        if (node->fileName == name) {
             return node;
         }
         if (name < node->fileName) {
@@ -84,6 +90,7 @@ void populateTreeFromDirectory(BinarySearchTree& bst, const string& directoryPat
             string filename = ent->d_name;
             if (filename.find(".txt") != string::npos) {
                 bst.insert(filename);
+                // cout << "Inserted: " << filename << endl; // Debug output
             }
         }
         closedir(dir);
@@ -92,7 +99,9 @@ void populateTreeFromDirectory(BinarySearchTree& bst, const string& directoryPat
     }
 }
 
+
 void displayFileContents(const string& filePath) {
+    cout << filePath << endl;
     ifstream file(filePath);
     if (file.is_open()) {
         cout << "Contents of " << filePath << ":" << endl;
@@ -106,12 +115,27 @@ void displayFileContents(const string& filePath) {
     }
 }
 
+//test Tree
+void inorderTraversal(TreeNode* node) {
+    if (node == nullptr) return;
+    inorderTraversal(node->left); // 訪問左子樹
+    cout << node->fileName << endl; // 輸出當前節點存儲的文件名
+    inorderTraversal(node->right); // 訪問右子樹
+}
+
+void displayAllFiles(BinarySearchTree& bst) {
+    cout << "All files in the binary search tree:" << endl;
+    inorderTraversal(bst.root);
+}
+
 int main() {
     BinarySearchTree bst;
     string directoryPath = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/";
     // string directoryPath = "./selected_course/";
     populateTreeFromDirectory(bst, directoryPath);
-    while(1) {
+    // displayAllFiles(bst); // 顯示所有文件名
+    //D053003133.txt
+    while (true) {
         string searchFile;
         cout << "Enter the name of the .txt file to search: ";
         cin >> searchFile;
@@ -119,7 +143,8 @@ int main() {
             cout << "Exiting..." << endl;
             break;
         }
-        //D0960810
+        cout << "Searching for: " << searchFile << endl; // Debug output
+
         TreeNode* result = bst.search(searchFile);
         if (result) {
             cout << searchFile << " found in the binary search tree." << endl;
