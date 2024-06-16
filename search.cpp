@@ -1,4 +1,3 @@
-
 #include <iostream>
 #include <fstream>
 #include <algorithm>
@@ -10,13 +9,18 @@
 #include <set>
 using namespace std;
 ifstream in;
-ifstream temp;
 void search(string stu_id)
 {
     stringstream ss;
     ss << "./selected_course/" << stu_id << ".txt";
     string filePath = ss.str();
     in.open(filePath.c_str());
+    if (!in)
+    {
+        cout << "The student ID does not exist." << endl;
+        return;
+    }
+    vector<pair<int,int>> poslist;
     string pos;
     while(getline(in, pos))
     {
@@ -34,21 +38,44 @@ void search(string stu_id)
         int firstNumber = seglist[0];
         int secondNumber = seglist[1];
         // 現在你可以使用firstNumber和secondNumber進行後續操作
+        poslist.push_back(make_pair(firstNumber, secondNumber));
+    }
+    in.close();
+    for (auto &pair : poslist)
+    {
         stringstream search_id;
-        search_id << "./data_big5/" << setw(4) << setfill('0') << firstNumber;
+        search_id << "./data_big5/" << setw(4) << setfill('0') << pair.first;
         string search_locate = search_id.str();
-        temp.open(search_locate.c_str());
+        in.open(search_locate.c_str());
         string temp_str;
-        for(int i = 0;i < secondNumber;i++)
+        for(int i = 0;i < pair.second;i++)
         {
-            getline(temp, temp_str);
+            getline(in, temp_str);
         }
-        temp.close();
+        in.close();
         cout << temp_str << endl;
     }
 }
 int main() 
 {
-    search("D000003506");
+    while(1)
+    {
+        string stu_id;
+        cout << "Please enter the student ID: ";
+        cin >> stu_id;
+        search(stu_id);
+        cout << "Do you want to search for another student? (Y/N): ";
+        char choice;
+        cin >> choice;
+        if(choice == 'N' || choice == 'n')
+        {
+            break;
+        }
+        else
+        {
+            system("cls");
+            continue;
+        }
+    }
     return 0;
 }
