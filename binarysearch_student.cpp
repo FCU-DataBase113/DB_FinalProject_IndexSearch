@@ -130,11 +130,7 @@ void displayAllFiles(BinarySearchTree& bst) {
 
 int main() {
     BinarySearchTree bst;
-<<<<<<< HEAD
-    //string directoryPath = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/";
-=======
     // string directoryPath = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/";
->>>>>>> 4269e7e3d49386ed132f9f690ef485aad3fea7a9
     string directoryPath = "./selected_course/";
     populateTreeFromDirectory(bst, directoryPath);
     // displayAllFiles(bst); // 顯示所有文件名
