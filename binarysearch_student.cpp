@@ -42,7 +42,6 @@ public:
                     break;
                 }
             } else {
-                // 名称相同，不需要插入
                 break;
             }
         }
@@ -130,7 +129,6 @@ void displayAllFiles(BinarySearchTree& bst) {
 
 int main() {
     BinarySearchTree bst;
-    // string directoryPath = "C:/Users/zxcmo/OneDrive/桌面/College/dataBasex02/DB_FinalProject_IndexSearch/selected_course/";
     string directoryPath = "./selected_course/";
     populateTreeFromDirectory(bst, directoryPath);
     // displayAllFiles(bst); // 顯示所有文件名

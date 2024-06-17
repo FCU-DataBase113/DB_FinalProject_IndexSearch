@@ -1,12 +1,14 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+#include <cstring>
 #include "dirent.h"  // Include dirent.h for directory operations
 
 using namespace std;
 
 struct Index {
     int course_id;
+    string fileNamePrefix;
     string fileName;
 };
 
@@ -25,49 +27,60 @@ public:
     BinarySearchTree() : root(nullptr) {}
 
     void insert(Index idx) {
+        TreeNode* newNode = new TreeNode(idx);
         if (!root) {
-            root = new TreeNode(idx);
+            root = newNode;
             return;
         }
 
         TreeNode* current = root;
         while (true) {
-            if (idx.course_id < current->index.course_id) {
+            if (idx.fileName < current->index.fileName) {
                 if (current->left) {
                     current = current->left;
                 } else {
-                    current->left = new TreeNode(idx);
+                    current->left = newNode;
                     break;
                 }
-            } else if (idx.course_id > current->index.course_id) {
+            } else if (idx.fileName > current->index.fileName) {
                 if (current->right) {
                     current = current->right;
                 } else {
-                    current->right = new TreeNode(idx);
+                    current->right = newNode;
                     break;
                 }
             } else {
-                // course_id 相同，不需要插入
                 break;
             }
         }
     }
 
-    TreeNode* search(int course_id) {
-        return searchRecursive(root, course_id);
+    void searchByPrefix(TreeNode* node, const string& prefix) {
+        if (!node) return;
+        searchByPrefix(node->left, prefix);
+        // 檢查當前節點的文件名前綴是否與輸入的前綴匹配
+        if (node->index.fileName.substr(0, prefix.length()) == prefix) {
+            displayFileContents("./course_student/" + node->index.fileName);
+        }
+        searchByPrefix(node->right, prefix);
     }
 
-    TreeNode* searchRecursive(TreeNode* node, int course_id) {
-        if (node == nullptr || node->index.course_id == course_id) {
-            return node;
-        }
-        if (course_id < node->index.course_id) {
-            return searchRecursive(node->left, course_id);
+    void displayFileContents(const string& filePath) {
+        ifstream file(filePath);
+        if (file.is_open()) {
+            cout << "Contents of " << filePath << ":" << endl;
+            string line;
+            while (getline(file, line)) {
+                cout << line << endl;
+            }
+            file.close();
         } else {
-            return searchRecursive(node->right, course_id);
+            cout << "Failed to open file: " << filePath << endl;
         }
     }
 };
+
+
 
 void populateTreeFromDirectory(BinarySearchTree& bst, const string& directoryPath) {
     DIR* dir;
@@ -76,15 +89,12 @@ void populateTreeFromDirectory(BinarySearchTree& bst, const string& directoryPat
         while ((ent = readdir(dir)) != NULL) {
             string filename = ent->d_name;
             if (filename.find(".txt") != string::npos) {
+                string prefix = filename.substr(0, filename.find('_'));
                 ifstream file(directoryPath + filename);
                 if (file.is_open()) {
-                    string student_id;
                     int course_id;
-                    string course_name;
-                    file >> student_id >> course_id;
-                    file.ignore(); // Ignore the space between course_id and course_name
-                    getline(file, course_name);
-                    Index idx = {course_id, filename};
+                    file >> course_id;
+                    Index idx = {course_id, prefix, filename};
                     bst.insert(idx);
                     file.close();
                 }
@@ -95,54 +105,36 @@ void populateTreeFromDirectory(BinarySearchTree& bst, const string& directoryPat
         perror("Could not open directory");
     }
 }
-
-void displayFileContents(const string& filePath) {
-    ifstream file(filePath);
-    if (file.is_open()) {
-        cout << "Contents of " << filePath << ":" << endl;
-        string line;
-        while (getline(file, line)) {
-            cout << line << endl;
-        }
-        file.close();
-    } else {
-        cout << "Failed to open file: " << filePath << endl;
-    }
-}
-
+//testTree
 void inorderTraversal(TreeNode* node) {
     if (node == nullptr) return;
-    inorderTraversal(node->left); // 訪問左子樹
-    cout << "Course ID: " << node->index.course_id << ", File: " << node->index.fileName << endl; // 輸出當前節點存儲的文件名
-    inorderTraversal(node->right); // 訪問右子樹
+    inorderTraversal(node->left); // 遍歷左子樹
+    cout << "Course ID: " << node->index.course_id << ", Prefix: " << node->index.fileNamePrefix << ", File Name: " << node->index.fileName << endl; // 輸出當前節點存儲的資料
+    inorderTraversal(node->right); // 遍歷右子樹
 }
 
-void displayAllFiles(BinarySearchTree& bst) {
-    cout << "All files in the binary search tree:" << endl;
+void displayAllTreeData(BinarySearchTree& bst) {
+    cout << "All data in the binary search tree:" << endl;
     inorderTraversal(bst.root);
 }
 
 int main() {
     BinarySearchTree bst;
-    string directoryPath = "./selected_course/";
+    string directoryPath = "./course_student/";
     populateTreeFromDirectory(bst, directoryPath);
+        displayAllTreeData(bst);
 
     while (true) {
-        int searchCourseId;
-        cout << "Enter the course ID to search: ";
-        cin >> searchCourseId;
-        if (searchCourseId == -1) {
+        string searchPrefix;
+        cout << "Enter the file prefix to search: ";
+        cin >> searchPrefix;
+        if (searchPrefix == "exit") {
             cout << "Exiting..." << endl;
             break;
         }
 
-        TreeNode* result = bst.search(searchCourseId);
-        if (result) {
-            cout << "Course ID " << searchCourseId << " found in the binary search tree." << endl;
-            displayFileContents(directoryPath + result->index.fileName);
-        } else {
-            cout << "Course ID " << searchCourseId << " not found in the binary search tree." << endl;
-        }
+        cout << "Searching for files with prefix " << searchPrefix << ":" << endl;
+        bst.searchByPrefix(bst.root, searchPrefix);
     }
     return 0;
 }
